@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+project_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+
+usage() {
+  cat <<'EOF'
+Usage: forensic <command> [arguments...]
+
+Solve (the only command most users need):
+  solve             Analyze a file end-to-end and print the flag, if any
+                    (solve [FILE], solve with no args auto-picks a file in
+                    the current directory, solve --latest picks the newest
+                    file in ~/Downloads)
+
+Case lifecycle:
+  new-case          Create a case and import evidence
+  add-evidence      Add non-overwriting evidence to a case
+  list-cases        List initialized cases
+  case-status       Summarize a case
+  case-doctor       Read-only diagnostic checks on a case
+  triage-case       Verify evidence integrity and run triage over it
+  case-report       Emit a consolidated case report
+  result-check      Enforce the final evidence/reviewer gate
+
+Integrity and records:
+  verify-evidence   Verify original evidence hashes
+  record-artifact   Hash a generated workspace file
+  verify-artifacts  Verify generated artifact hashes
+  log-command       Execute and record an important command
+  flag-scan         Search for flag-shaped strings with offsets
+
+Result gate (candidates -> review -> reproduction -> final):
+  add-candidate     Record a flag candidate with its evidence chain
+  add-review        Record a reviewer verdict over one or more candidates
+  set-reproduction  Record the minimal reproduction for a candidate
+  set-final         Bind a case's accepted final flag to a candidate
+
+Focused triage:
+  ftriage            Format-agnostic file triage (dispatches by content)
+  farchive           Archive/container triage (zip/tar/gzip/bz2/xz)
+  fpcap              Packet-capture triage (pcap/pcapng)
+  fsqlite            Read-only SQLite triage
+  fstego             Image/steganography triage (PNG/JPEG/BMP/GIF)
+  fmemory            Memory-image triage (LiME/ELF-core/crash-dump/raw)
+  fdisk              Disk/partition-table triage (MBR/GPT/filesystems)
+  fdocument          Document triage (PDF/OLE-CFBF/OOXML)
+
+Environment and remote server:
+  tool-inventory     Check local baseline tools
+  remote-check       Resolve and test the forensic SSH alias
+  remote-exec        Execute (or, with --dry-run, only render) a remote command
+  remote-copy        Push or pull a file (or, with --dry-run, only render it)
+  nodes-status       Show discovered execution environments (local + any
+                     configured remote nodes; internal/debugging)
+
+Every subcommand also accepts a trailing --json for machine-readable output.
+EOF
+}
+
+if (( $# == 0 )) || [[ $1 == help || $1 == --help || $1 == -h ]]; then
+  usage
+  exit 0
+fi
+
+command_name=$1
+shift
+case "$command_name" in
+  solve|\
+  new-case|add-evidence|list-cases|case-status|case-doctor|triage-case|case-report|result-check|\
+  verify-evidence|record-artifact|verify-artifacts|log-command|flag-scan|\
+  add-candidate|add-review|set-reproduction|set-final|\
+  ftriage|farchive|fpcap|fsqlite|fstego|fmemory|fdisk|fdocument|\
+  tool-inventory|remote-check|remote-exec|remote-copy|nodes-status)
+    exec "$project_root/bin/$command_name" "$@"
+    ;;
+  *)
+    echo "Unknown command: $command_name" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

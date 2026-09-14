@@ -1,0 +1,8 @@
+# Copy this block into ~/.ssh/config only after replacing every placeholder.
+# Do not commit real hostnames, usernames, or private-key paths here.
+Host forensic
+    HostName <FORENSIC_SERVER_IP_OR_NAME>
+    User <FORENSIC_USER>
+    IdentityFile ~/.ssh/<FORENSIC_PRIVATE_KEY>
+    IdentitiesOnly yes
+

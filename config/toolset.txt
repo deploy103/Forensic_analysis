@@ -1,0 +1,26 @@
+# Baseline commands checked by bin/tool-inventory.
+# One executable name per line; comments and blank lines are ignored.
+file
+strings
+xxd
+sha256sum
+exiftool
+binwalk
+foremost
+bulk_extractor
+fls
+mmls
+testdisk
+tshark
+tcpdump
+yara
+ffmpeg
+magick
+sqlite3
+7z
+vol.py
+zsteg
+stegseek
+olevba
+python3
+

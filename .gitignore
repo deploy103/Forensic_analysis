@@ -1,0 +1,66 @@
+# --- Case payload: never commit evidence bytes, extracted/dumped output, or
+# raw per-command logs. Analyst-authored workspace scripts, structured
+# manifests (JSONL), and the candidates/review/reproduction/final gate
+# records are the actual case *record* and must stay trackable.
+cases/*/evidence/*
+cases/*/workspace/extracted/*
+cases/*/workspace/dumps/*
+cases/*/logs/*.log
+cases/*/logs/*.raw
+cases/*/logs/*.out
+cases/*/logs/*.txt
+!cases/.template/
+!cases/.template/**/.gitkeep
+
+# Atomic-publish staging leftovers (see case.py: create_case/add_evidence use
+# a dotfile-prefixed temp dir/file next to the destination, then rename).
+# These should never survive a clean run, but must never be committed if a
+# crash leaves one behind.
+cases/.new-*
+cases/*/evidence/.partial-*
+
+# --- Python
+__pycache__/
+*.pyc
+
+# --- Secrets: an analyst's real SSH config/keys must never enter the repo.
+# config/ssh_config.example is the only tracked SSH config file; anything
+# named plainly "ssh_config" (no .example suffix) is assumed real.
+config/ssh_config
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+id_ecdsa
+id_ecdsa.*
+known_hosts
+
+# Real forensic-server host/credentials for this deployment (plaintext IP,
+# user, password) -- must never enter history.
+/server
+
+# --- Local operator material: keep private instructions, prompts,
+# requirement drafts, agent configuration, and work journals out of Git.
+AGENTS.md
+PROMPT.md
+PROMPORT.md
+.agent/
+.agents/
+.codex/
+*요구사항*.md
+*작업일지*.md
+*작업기록*.md
+*작업로그*.md
+/서버작업
+
+# Local development surveys and handoff/work-status records.
+/agents/
+/docs/environment.md
+/docs/implementation.md
+/docs/local-tools.md
+/docs/TODO.md
+/docs/validation.md
